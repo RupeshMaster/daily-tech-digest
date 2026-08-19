@@ -62,7 +62,6 @@ Format the output into a beautifully structured, easy-to-read Telegram briefing.
 • *[Niche Topic 1]:* [1-2 sentence under-the-radar insight or key takeaway].
 • *[Niche Topic 2]:* [1-2 sentence under-the-radar insight or key takeaway].
 ━━━━━━━━━━━━━━━━━━━
-_⚡ Powered by Gemini & GitHub Actions_
 Rules:
 - Add double line breaks between sections and items for clean spacing on mobile.
 - Embed article links cleanly as [Read Source](url) instead of showing long raw URLs.
