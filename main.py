@@ -40,6 +40,7 @@ def summarize_with_gemini(raw_text):
 {raw_text}
 Format the output into a beautifully structured, easy-to-read Telegram briefing. Follow this exact layout:
 🌅 *DAILY TECH & AI BRIEFING*
+
 📅 {today_str}
 ━━━━━━━━━━━━━━━━━━━
 🔥 *TOP 3 BREAKTHROUGHS*
