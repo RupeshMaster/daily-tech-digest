@@ -4,6 +4,8 @@ import requests
 import feedparser
 from datetime import datetime
 import pytz
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
@@ -14,6 +16,20 @@ FEEDS = [
     "https://venturebeat.com/category/ai/feed/",
     "https://news.ycombinator.com/rss"
 ]
+
+def create_session_with_retries():
+    """Create a requests session with retry strategy for transient failures"""
+    session = requests.Session()
+    retry_strategy = Retry(
+        total=3,
+        backoff_factor=1,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["POST"]
+    )
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 def fetch_articles():
     articles = []
@@ -30,7 +46,7 @@ def fetch_articles():
                     articles.append(f"Title: {title}\nSummary: {clean_summary}\nLink: {link}")
         except Exception as e:
             print(f"Error reading {url}: {e}")
-    return "\n\n".join(articles[:15])
+    return "\n\n".join(articles[:10])
 
 def summarize_with_gemini(raw_text):
     ist = pytz.timezone('Asia/Kolkata')
@@ -75,7 +91,8 @@ Rules:
         }]
     }
    
-    resp = requests.post(api_url, json=payload, timeout=30)
+    session = create_session_with_retries()
+    resp = session.post(api_url, json=payload, timeout=60)
     resp.raise_for_status()
     data = resp.json()
     return data['candidates'][0]['content']['parts'][0]['text']
@@ -88,7 +105,8 @@ def send_telegram(text):
         "parse_mode": "Markdown",
         "disable_web_page_preview": True
     }
-    resp = requests.post(tg_url, json=payload, timeout=15)
+    session = create_session_with_retries()
+    resp = session.post(tg_url, json=payload, timeout=15)
     resp.raise_for_status()
 
 if __name__ == "__main__":
