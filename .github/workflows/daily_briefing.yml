@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt pytz
+          pip install -r requirements.txt pytz requests
 
       - name: Execute Daily Briefing Script
         env:
@@ -29,3 +31,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           python main.py
+
+      - name: Log run completion
+        if: always()
+        run: |
+          echo "Workflow run completed at $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          echo "Trigger: ${{ github.event_name }}"
