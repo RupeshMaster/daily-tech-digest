@@ -16,7 +16,7 @@ FEEDS = [
     "https://venturebeat.com/category/ai/feed/",
     "https://news.ycombinator.com/rss"
 ]
-
+"""Code"""
 def create_session_with_retries():
     """Create a requests session with retry strategy for transient failures"""
     session = requests.Session()
