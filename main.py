@@ -90,7 +90,7 @@ Rules:
             "parts": [{"text": prompt}]
         }]
     }
-   """need to update it time to time"""
+
     session = create_session_with_retries()
     resp = session.post(api_url, json=payload, timeout=60)
     resp.raise_for_status()
